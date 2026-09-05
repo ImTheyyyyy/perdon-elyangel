@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>¿Me perdonas, Elyangel?</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a0826 0%, #3a0037 40%, #5c0632 70%, #1a0826 100%);
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            padding: 15px;
+            overflow: hidden;
+            position: relative;
+            color: #fff;
+            touch-action: manipulation;
+        }
+
+        .particle-svg {
+            position: fixed;
+            top: -10%;
+            user-select: none;
+            pointer-events: none;
+            z-index: 1;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.8);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(110vh) rotate(360deg) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        /* Reproductor de Audio con SVG */
+        .audio-control {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 8px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .music-icon-svg {
+            width: 18px;
+            height: 18px;
+            fill: #ff85a2;
+            animation: pulse-music 1.5s infinite;
+        }
+
+        @keyframes pulse-music {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.15);
+            }
+        }
+
+        /* Tarjeta principal */
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 25px 20px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            position: relative;
+            /* Clave para contener al botón "No" dentro de ella */
+            z-index: 10;
+            animation: fadeIn 1s ease-out;
+            overflow: hidden;
+            /* Asegura que el botón no rebase los bordes redondeados de la tarjeta */
+            min-height: 480px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .photo-frame {
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            padding: 4px;
+            background: linear-gradient(45deg, #ff4b72, #ff85a2, #ffb3c6);
+            box-shadow: 0 10px 25px rgba(255, 75, 114, 0.4);
+            position: relative;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #fff;
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.3rem;
+            color: #ff85a2;
+            text-shadow: 0 0 10px rgba(255, 133, 162, 0.5);
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            font-size: 0.9rem;
+            color: #e0e0e0;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+            min-height: 55px;
+        }
+
+        button {
+            padding: 12px 26px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-yes {
+            background: linear-gradient(45deg, #00c853, #b9f6ca);
+            color: #003311;
+            box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Botón "No" confinado estrictamente al interior de la tarjeta */
+        .btn-no {
+            background: linear-gradient(45deg, #ff1744, #ff8a80);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255, 23, 68, 0.4);
+            position: absolute;
+            z-index: 10;
+            transition: top 0.15s ease-out, left 0.15s ease-out;
+        }
+
+        .footer-credits {
+            margin-top: 20px;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.6);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .footer-credits span {
+            color: #ff85a2;
+            font-weight: 600;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .success-card {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-card h2 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.6rem;
+            color: #b9f6ca;
+            text-shadow: 0 0 12px rgba(185, 246, 202, 0.6);
+            margin-bottom: 12px;
+        }
+
+        .gif-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 10px auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .gif-container img {
+            width: 100%;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="assets/musica.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="audio-control" id="musicToggle">
+        <!-- Icono SVG de Música -->
+        <svg class="music-icon-svg" viewBox="0 0 24 24">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+        </svg>
+        <span id="musicText">Pausar</span>
+    </div>
+
+    <div class="card" id="mainCard">
+        <div class="photo-frame">
+            <img src="assets/foto.jpg" alt="Steven y Elyangel">
+        </div>
+
+        <h1>¿Me perdonas, Elyangel?</h1>
+        <p class="subtitle">
+            Sé que parece que no me interesas pero no es así, eres la mejor mujer que eh conocido en toda mi vida y la
+            única que quiero, no te puedo explicar con palabras como me siento cuando estoy contigo. Quiero terminar
+            junto a ti para toda mi vida. Déjame demostrartelo
+        </p>
+
+        <div class="buttons" id="buttonsContainer">
+            <button class="btn-yes" id="btnYes">¡Sí, te perdono! ❤️</button>
+            <button class="btn-no" id="btnNo">No 💔</button>
+        </div>
+
+        <div class="footer-credits">
+            Creada con todo mi amor por <span>Steven Gomez</span>
+        </div>
+    </div>
+
+    <div class="card success-card hidden" id="successCard">
+        <div class="gif-container" id="mediaContainer">
+            <img id="activeMedia" src="assets/foto1.jpg" alt="Recuerdo especial">
+        </div>
+
+        <h2>¡Gracias, Mujer! 🩷</h2>
+        <p class="subtitle">
+            Prometo demostrarte con hechos lo mucho que me importas. Te quiero como no te lo imaginas. 💕✨
+        </p>
+        <div class="footer-credits">
+            Creada especialmente para ti por <span>Steven Gomez</span>
+        </div>
+    </div>
+
+    <script>
+        // --- PARTÍCULAS ---
+        const svgTemplates = [
+            `<svg width="22" height="22" viewBox="0 0 24 24" fill="#ff4b72"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+            `<svg width="22" height="22" viewBox="0 0 24 24" fill="#ff85a2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>`,
+            `<svg width="22" height="22" viewBox="0 0 24 24" fill="#ffd1dc"><path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/></svg>`
+        ];
+
+        function createSvgParticle() {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('particle-svg');
+            wrapper.innerHTML = svgTemplates[Math.floor(Math.random() * svgTemplates.length)];
+            wrapper.style.left = Math.random() * 100 + 'vw';
+            const duration = Math.random() * 3 + 2.5;
+            wrapper.style.animationDuration = duration + 's';
+            document.body.appendChild(wrapper);
+            setTimeout(() => { wrapper.remove(); }, duration * 1000);
+        }
+        setInterval(createSvgParticle, 300);
+
+        // --- AUDIO ACTIVO DESDE EL INICIO ---
+        const bgMusic = document.getElementById('bgMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        const musicText = document.getElementById('musicText');
+        let isPlaying = false;
+
+        let userPaused = false; // el usuario pausó manualmente, no forzar reproducción de nuevo
+
+        function intentarReproducir(silenciado) {
+            bgMusic.muted = !!silenciado;
+            bgMusic.play().then(() => {
+                isPlaying = true;
+                musicText.innerText = "Pausar";
+            }).catch(err => {
+                isPlaying = false;
+                musicText.innerText = "Reproducir";
+            });
+        }
+
+        window.addEventListener('load', () => {
+            // Los navegadores móviles casi siempre bloquean audio con sonido sin interacción previa.
+            // Truco: arrancamos SILENCIADA (eso sí lo permiten) y en el primer toque/click
+            // de la persona en cualquier parte de la pantalla, le quitamos el silencio.
+            intentarReproducir(true);
+        });
+
+        function activarSonidoConInteraccion() {
+            if (!userPaused && bgMusic.muted) {
+                bgMusic.muted = false;
+                if (bgMusic.paused) {
+                    bgMusic.play();
+                }
+                isPlaying = true;
+                musicText.innerText = "Pausar";
+            }
+        }
+        document.addEventListener('click', activarSonidoConInteraccion, { once: true });
+        document.addEventListener('touchstart', activarSonidoConInteraccion, { once: true, passive: true });
+
+        musicToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (isPlaying) {
+                bgMusic.pause();
+                musicText.innerText = "Reproducir";
+                isPlaying = false;
+                userPaused = true;
+            } else {
+                bgMusic.muted = false;
+                bgMusic.play();
+                musicText.innerText = "Pausar";
+                isPlaying = true;
+                userPaused = false;
+            }
+        });
+
+        // --- BOTÓN ESCAPISTA "NO" DENTRO DE LA TARJETA ---
+        const btnNo = document.getElementById('btnNo');
+        const mainCard = document.getElementById('mainCard');
+        let isAbsoluteSet = false;
+
+        function escaparBoton(e) {
+            if (e) e.preventDefault();
+
+            // Al primer intento, posicionamos el botón de forma absoluta respecto a la tarjeta
+            if (!isAbsoluteSet) {
+                const cardRect = mainCard.getBoundingClientRect();
+                const btnRect = btnNo.getBoundingClientRect();
+
+                // Mantiene la posición exacta donde estaba inicialmente dentro de la tarjeta
+                btnNo.style.left = (btnRect.left - cardRect.left) + 'px';
+                btnNo.style.top = (btnRect.top - cardRect.top) + 'px';
+                isAbsoluteSet = true;
+            }
+
+            const cardWidth = mainCard.clientWidth;
+            const cardHeight = mainCard.clientHeight;
+            const btnWidth = btnNo.offsetWidth;
+            const btnHeight = btnNo.offsetHeight;
+
+            // Márgenes de seguridad internos para que no toque los bordes de la tarjeta
+            const padding = 20;
+            const maxX = Math.max(padding, cardWidth - btnWidth - padding);
+            const maxY = Math.max(padding, cardHeight - btnHeight - padding);
+
+            // Coordenadas aleatorias confinadas estrictamente al interior de la tarjeta
+            let randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            let randomY = Math.max(padding, Math.floor(Math.random() * maxY));
+
+            // Seguro adicional: si por cualquier motivo se calculara fuera de rango, lo recortamos
+            randomX = Math.min(randomX, cardWidth - btnWidth - padding);
+            randomY = Math.min(randomY, cardHeight - btnHeight - padding);
+            randomX = Math.max(randomX, padding);
+            randomY = Math.max(randomY, padding);
+
+            btnNo.style.left = `${randomX}px`;
+            btnNo.style.top = `${randomY}px`;
+        }
+
+        btnNo.addEventListener('mouseover', escaparBoton);
+        btnNo.addEventListener('touchstart', escaparBoton, { passive: false });
+        btnNo.addEventListener('click', escaparBoton);
+
+        // --- BOTÓN SÍ ---
+        document.getElementById('btnYes').addEventListener('click', () => {
+            mainCard.classList.add('hidden');
+            document.getElementById('successCard').classList.remove('hidden');
+            for (let i = 0; i < 40; i++) {
+                setTimeout(createSvgParticle, i * 30);
+            }
+        });
+
+        // --- SECUENCIA DE MULTIMEDIA (FOTO 5 SEG + 3 VIDEOS) ---
+        const mediaPlaylist = [
+            { type: 'img', src: 'assets/foto1.jpg', duration: 3000 }, // 5 segundos
+            { type: 'video', src: 'assets/video1.mp4' },
+            { type: 'video', src: 'assets/video2.mp4' },
+            { type: 'video', src: 'assets/video3.mp4' },
+            { type: 'video', src: 'assets/video4.mp4' }
+        ];
+
+        let currentMediaIndex = 0;
+
+        function iniciarSecuenciaMultimedia() {
+            const container = document.getElementById('mediaContainer');
+            if (!container) return;
+
+            // Limpiamos el contenedor
+            container.innerHTML = '';
+
+            const currentItem = mediaPlaylist[currentMediaIndex];
+
+            if (currentItem.type === 'img') {
+                const img = document.createElement('img');
+                img.src = currentItem.src;
+                img.style.width = '100%';
+                img.style.display = 'block';
+                container.appendChild(img);
+
+                // Cambiar al siguiente elemento cuando pasen los segundos definidos
+                setTimeout(() => {
+                    currentMediaIndex = (currentMediaIndex + 1) % mediaPlaylist.length;
+                    iniciarSecuenciaMultimedia();
+                }, currentItem.duration);
+
+            } else if (currentItem.type === 'video') {
+                const video = document.createElement('video');
+                video.src = currentItem.src;
+                video.autoplay = true;
+                video.muted = true; // Importante para que los videos auto-reproduzcan sin bloqueo en móviles
+                video.playsInline = true;
+                video.style.width = '100%';
+                video.style.display = 'block';
+                container.appendChild(video);
+
+                // Cuando el video termine, pasa automáticamente al siguiente archivo
+                video.onended = () => {
+                    currentMediaIndex = (currentMediaIndex + 1) % mediaPlaylist.length;
+                    iniciarSecuenciaMultimedia();
+                };
+            }
+        }
+
+        // Y dentro del evento del botón "Sí", asegúrate de iniciar la secuencia:
+        document.getElementById('btnYes').addEventListener('click', () => {
+            mainCard.classList.add('hidden');
+            document.getElementById('successCard').classList.remove('hidden');
+
+            // Inicia la rotación de fotos y videos
+            currentMediaIndex = 0;
+            iniciarSecuenciaMultimedia();
+
+            for (let i = 0; i < 40; i++) {
+                setTimeout(createSvgParticle, i * 30);
+            }
+        });
+    </script>
+
+</body>
+
+</html>
